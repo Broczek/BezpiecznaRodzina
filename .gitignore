@@ -117,3 +117,27 @@ app.*.symbols
 !**/ios/**/default.perspectivev3
 !/packages/flutter_tools/test/data/dart_dependencies_test/**/.packages
 !/dev/ci/**/Gemfile.lock
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDEs
+.idea/
+*.iml
+.vscode/
+
+# Local environment / secrets
+.env
+.env.*
+*.keystore
+key.properties
+
+# Mobile service config files
+google-services.json
+GoogleService-Info.plist
+
+# fastlane
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/credentials.json
