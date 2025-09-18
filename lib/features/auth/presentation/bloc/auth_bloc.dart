@@ -81,7 +81,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     if (state.status == AuthStatus.failure) {
       await Future.delayed(const Duration(seconds: 3));
       if (!isClosed) {
-        emit(state.copyWith(status: AuthStatus.unauthenticated, errorField: LoginErrorField.none, errorMessage: null));
+        emit(const AuthState.unauthenticated());
       }
     }
   }

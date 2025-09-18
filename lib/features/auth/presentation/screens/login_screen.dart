@@ -69,6 +69,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   children: [
                     // Custom text field that highlights on error.
                     _buildDecoratedTextField(
+                      key: const ValueKey('username_field'), // Key for testing
                       controller: _usernameController,
                       labelText: l10n.loginUsernameLabel,
                       hasError: state.errorField == LoginErrorField.username,
@@ -77,6 +78,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     const SizedBox(height: 16),
                     _buildDecoratedTextField(
+                      key: const ValueKey('password_field'), // Key for testing
                       controller: _passwordController,
                       labelText: l10n.loginPasswordLabel,
                       hasError: state.errorField == LoginErrorField.password,
@@ -94,6 +96,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     const SizedBox(height: 16),
                     ElevatedButton(
+                      key: const ValueKey('login_submit_button'), // Key for testing
                       onPressed: isLoading ? null : _submitForm,
                       child: isLoading
                           ? const SizedBox(
@@ -119,6 +122,7 @@ class _LoginScreenState extends State<LoginScreen> {
     required TextEditingController controller,
     required String labelText,
     required FormFieldValidator<String> validator,
+    Key? key,
     bool hasError = false,
     bool obscureText = false,
   }) {
@@ -137,6 +141,7 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       ),
       child: TextFormField(
+        key: key,
         controller: controller,
         decoration: InputDecoration(labelText: labelText),
         obscureText: obscureText,
@@ -157,3 +162,4 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 }
+

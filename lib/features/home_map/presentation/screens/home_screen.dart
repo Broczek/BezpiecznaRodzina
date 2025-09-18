@@ -51,6 +51,7 @@ class HomeScreen extends StatelessWidget {
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
+                  key: const ValueKey('home_login_button'), // Key for testing
                   onPressed: () => context.go('/login'),
                   child: Text(l10n.loginButton),
                 ),

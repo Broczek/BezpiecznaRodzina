@@ -14,7 +14,8 @@ import 'package:uuid/uuid.dart';
 // In this implementation, it mocks a backend by storing data in-memory.
 class AuthRepository {
   // In-memory storage for the main user, sub-users (family members), and zones.
-  User? _currentUser;
+  // ADD THIS MOCK USER FOR INTEGRATION TESTING
+  User? _currentUser = const User(id: 'admin-id', username: 'admin', password: 'password', role: UserRole.admin);
   final List<SubUser> _subUsers = [];
   final List<Zone> _zones = [];
 

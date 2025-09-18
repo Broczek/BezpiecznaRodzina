@@ -21,10 +21,14 @@ class FamilyListScreen extends StatefulWidget {
 
 class _FamilyListScreenState extends State<FamilyListScreen> {
   @override
-  void initState() {
-    super.initState();
-    // Trigger the initial data fetch when the screen is loaded.
-    context.read<FamilyBloc>().add(FetchFamilyData());
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Safely dispatch the event here. It's called after initState and has access to context.
+    // We check the state to ensure we only fetch data once when the screen is first loaded.
+    final familyBloc = context.read<FamilyBloc>();
+    if (familyBloc.state is FamilyInitial) {
+      familyBloc.add(FetchFamilyData());
+    }
   }
 
   @override
@@ -37,14 +41,14 @@ class _FamilyListScreenState extends State<FamilyListScreen> {
       // BlocBuilder rebuilds the UI in response to FamilyState changes.
       body: BlocBuilder<FamilyBloc, FamilyState>(
         builder: (context, state) {
-          if (state is FamilyLoading) {
+          if (state is FamilyInitial || state is FamilyLoading) {
             return const Center(child: CircularProgressIndicator());
           }
           if (state is FamilyLoaded) {
             if (state.members.isEmpty) {
-              return _buildEmptyState();
+              return _buildEmptyState(context);
             }
-            return _buildUserList(state.members);
+            return _buildUserList(context, state.members);
           }
           if (state is FamilyError) {
             return Center(child: Text('Error: ${state.message}'));
@@ -56,8 +60,11 @@ class _FamilyListScreenState extends State<FamilyListScreen> {
   }
 
   // Widget to display when there are no family members.
-  Widget _buildEmptyState() {
+  Widget _buildEmptyState(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final authState = context.watch<AuthBloc>().state;
+    final canManage = authState.user?.role == UserRole.admin;
+
     return Center(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24.0),
@@ -78,11 +85,12 @@ class _FamilyListScreenState extends State<FamilyListScreen> {
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 30),
-            ElevatedButton.icon(
-              onPressed: () => context.push('/family-member-creator'),
-              icon: const Icon(Icons.add),
-              label: Text(l10n.familyAddFirstUserButton),
-            ),
+            if (canManage)
+              ElevatedButton.icon(
+                onPressed: () => context.push('/family-member-creator'),
+                icon: const Icon(Icons.add),
+                label: Text(l10n.familyAddFirstUserButton),
+              ),
           ],
         ),
       ),
@@ -90,7 +98,7 @@ class _FamilyListScreenState extends State<FamilyListScreen> {
   }
 
   // Widget to build the list of user cards.
-  Widget _buildUserList(List<SubUser> members) {
+  Widget _buildUserList(BuildContext context, List<SubUser> members) {
     final authState = context.watch<AuthBloc>().state;
     final userRole = authState.user?.role;
 

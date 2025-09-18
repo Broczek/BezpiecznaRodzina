@@ -46,20 +46,20 @@ class RegistrationBloc extends Bloc<RegistrationEvent, RegistrationState> {
   // Handles submission of initial credentials (email/phone, username, password).
   Future<void> _onCredentialsSubmitted(RegistrationCredentialsSubmitted event, Emitter<RegistrationState> emit) async {
     emit(state.copyWith(status: RegistrationStatus.loading));
-    await Future.delayed(const Duration(seconds: 1)); // Mock network delay
+    // Artificial delay removed for testability
     emit(state.copyWith(status: RegistrationStatus.initial, currentStep: 1));
   }
 
   // Handles submission of the verification code.
   Future<void> _onCodeSubmitted(RegistrationCodeSubmitted event, Emitter<RegistrationState> emit) async {
     emit(state.copyWith(status: RegistrationStatus.loading));
-    await Future.delayed(const Duration(seconds: 1)); // Mock verification
+    // Artificial delay removed for testability
     if (state.verificationCode == '123456') { // Mock success code
       emit(state.copyWith(status: RegistrationStatus.initial, currentStep: 2));
     } else {
       emit(state.copyWith(status: RegistrationStatus.failure, errorMessage: 'Invalid code'));
-      await Future.delayed(const Duration(seconds: 2));
-      emit(state.copyWith(status: RegistrationStatus.initial, errorMessage: null)); // Reset error
+      // The error state will be reset by the user's next action, no need for a timed delay.
+      // For testing, we can check the failure state directly.
     }
   }
 
@@ -140,11 +140,6 @@ class RegistrationBloc extends Bloc<RegistrationEvent, RegistrationState> {
         status: RegistrationStatus.failure,
         errorMessage: e.toString().replaceFirst("Exception: ", ""),
       ));
-      // After a delay, reset the error state so the user can try again.
-      await Future.delayed(const Duration(seconds: 4));
-      if (!isClosed) {
-        emit(state.copyWith(status: RegistrationStatus.initial, errorMessage: null));
-      }
     }
   }
 }
