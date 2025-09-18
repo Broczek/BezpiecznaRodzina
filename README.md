@@ -62,8 +62,8 @@ The development process was guided by the decision to create a cohesive and robu
 3.  **Clone & Run**:
     ```bash
     # Clone the repository
-    git clone <repository-url>
-    cd <repository-directory>
+    git clone https://github.com/Broczek/BezpiecznaRodzina.git into BezpiecznaRodzina
+    cd BezpiecznaRodzina
 
     # Get dependencies
     flutter pub get
